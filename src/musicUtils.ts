@@ -10,6 +10,7 @@ function getRandomKey(): string {
 }
 
 function getMajorScale(startNote: string): string[] {
+  // Determine whether to use flat notes for specific keys
   const useFlatNotes = ["F", "Bb", "Eb", "Ab", "Db", "Gb"].includes(startNote);
   const notes = useFlatNotes ? FLAT_NOTES : SHARP_NOTES;
   let startIndex = notes.indexOf(startNote);
@@ -24,6 +25,11 @@ function getMajorScale(startNote: string): string[] {
     scale.push(notes[startIndex]);
   }
 
+  // Special case for Gb major scale to replace B with Cb
+  if (startNote === "Gb") {
+    return scale.map((note) => (note === "B" ? "Cb" : note));
+  }
+
   return scale;
 }
 
@@ -32,7 +38,6 @@ export function getRandomMode(): { modeName: string, scale: string[] } {
   const randomModeIndex = Math.floor(Math.random() * 7);
   const modeName = MODES[randomModeIndex];
   
-  // Rotate the scale to start from the selected note and remove the extra root at the end
   const modeScale = [
     ...majorScale.slice(randomModeIndex, majorScale.length - 1),
     ...majorScale.slice(0, randomModeIndex),
